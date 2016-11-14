@@ -13,15 +13,22 @@ class TestProgram(nose.core.TestProgram):
     See nose.core.TestProgram for more information.
     """
     def __init__(self, *args, **kwargs):
-        server_ip = os.environ.get('DDBUG_HOST')
-        ddbug = os.environ.get('DDBUG')
-        if server_ip and ddbug:
-            # TODO: move more of these parameters into DDBUG environment variables
-            import pydevd
-            pydevd.settrace(os.environ['DDBUG_HOST'], port=os.environ.get('DDBUG_PORT') or 51500,
-                            stdoutToServer=True, stderrToServer=True, suspend=False,
-                            trace_only_current_thread=False, patch_multiprocessing=True)
+        connect_debugger()
         super(TestProgram, self).__init__(*args, **kwargs)
+
+
+connected = False
+def connect_debugger():
+    global connected
+    server_ip = os.environ.get('DDBUG_HOST')
+    ddbug = os.environ.get('DDBUG')
+    if not connected and server_ip and ddbug:
+        # TODO: move more of these parameters into DDBUG environment variables
+        import pydevd
+        pydevd.settrace(os.environ['DDBUG_HOST'], port=os.environ.get('DDBUG_PORT') or 51500,
+                        stdoutToServer=True, stderrToServer=True, suspend=False,
+                        trace_only_current_thread=False, patch_multiprocessing=True)
+        connected = True
 
 
 # maintain backwards compatibility with nosetests
