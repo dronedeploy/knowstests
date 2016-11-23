@@ -25,7 +25,7 @@ def connect_debugger():
     if not connected and server_ip and ddbug:
         # TODO: move more of these parameters into DDBUG environment variables
         import pydevd
-        pydevd.settrace(os.environ['DDBUG_HOST'], port=os.environ.get('DDBUG_PORT') or 51500,
+        pydevd.settrace(os.environ['DDBUG_HOST'], port=int(os.environ.get('DDBUG_PORT') or 51500),
                         stdoutToServer=True, stderrToServer=True, suspend=False,
                         trace_only_current_thread=False, patch_multiprocessing=True)
         connected = True
